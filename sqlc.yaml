@@ -1,0 +1,20 @@
+version: "2"
+sql:
+  - schema: "./db/postgres/migrations/"
+    queries: "./db/postgres/queries/"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "./db/postgres/sqlc"
+        sql_package: "pgx/v4"
+        emit_interface: true
+        emit_empty_slices: true
+  # - schema: "./db/mysql/migrations/"
+  #   queries: "./db/mysql/queries/"
+  #   engine: "mysql"
+  #   gen:
+  #     go:
+  #       package: "db"
+  #       out: "./db/mysql/sqlc"
+  #       emit_empty_slices: true
