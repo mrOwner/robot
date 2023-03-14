@@ -20,10 +20,10 @@ import (
 var (
 	_ app.LifeCycle = (*cc.Collector)(nil)
 
-	configPath = kingpin.Flag("config", "the path to the directory with a config file.").Default(".").ExistingDir()
+	configPath = kingpin.Flag("config", "The path to the directory with a config file.").Default(".").ExistingDir()
 
-	grab = kingpin.Command("grab", "download new candles and save them to the database.")
-	file = grab.Arg("file", "the path to a file with FIGIs.").Default("./configs/FIGIs.txt").ExistingFile()
+	grab = kingpin.Command("grab", "Download new candles and save them to the database.")
+	file = grab.Arg("file", "The path to a file with FIGIs.").Default("./configs/FIGIs.txt").ExistingFile()
 )
 
 func main() {
