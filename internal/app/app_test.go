@@ -2,14 +2,24 @@ package app
 
 import (
 	"context"
+	"io"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/golang/mock/gomock"
 	mock "github.com/mrOwner/robot/mocks"
 	"github.com/mrOwner/robot/util"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 )
+
+func TestMain(m *testing.M) {
+	// Disable output from Zerolog.
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: io.Discard})
+	os.Exit(m.Run())
+}
 
 func TestApp(t *testing.T) {
 	n := 100

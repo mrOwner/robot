@@ -4,12 +4,14 @@ go 1.20
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.3.2
+	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/golang/mock v1.4.4
 	github.com/google/go-cmp v0.5.9
 	github.com/google/uuid v1.1.2
 	github.com/jackc/pgconn v1.14.0
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/jarcoal/httpmock v1.3.0
+	github.com/jinzhu/copier v0.3.5
 	github.com/rs/zerolog v1.29.0
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2

@@ -29,7 +29,7 @@ func (r *iteratorForCreateCandles) Next() bool {
 
 func (r iteratorForCreateCandles) Values() ([]interface{}, error) {
 	return []interface{}{
-		r.rows[0].Uid,
+		r.rows[0].UID,
 		r.rows[0].Date,
 		r.rows[0].Open,
 		r.rows[0].Close,

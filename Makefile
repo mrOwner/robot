@@ -81,6 +81,14 @@ sqlc: ## Generate sqlc files.
 	sqlc generate
 .PHONY: migration/sqlc
 
+##@ Mocks
+
+mocks: ## Generate mocks.
+	@go generate ./...; \
+	mockgen -package mock -destination ./mocks/querier.go github.com/mrOwner/robot/db/postgres/sqlc Querier
+
+.PHONY: mocks
+
 ##@ Install
 
 install/atlas: ## Install the atlas.

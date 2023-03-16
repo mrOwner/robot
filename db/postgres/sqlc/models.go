@@ -9,7 +9,7 @@ import (
 )
 
 type CalculateCandle struct {
-	Uid    string
+	UID    string
 	Date   time.Time
 	Open   float32
 	Close  float32

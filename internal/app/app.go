@@ -14,7 +14,7 @@ const (
 	keyDur = "duration"
 )
 
-//go:generate mockgen  --build_flags=--mod=mod -destination=../../mocks/app.go -package=mock github.com/mrOwner/robot/internal/app LifeCycle
+//go:generate mockgen --build_flags=--mod=mod -destination=../../mocks/app.go -package=mock github.com/mrOwner/robot/internal/app LifeCycle
 type LifeCycle interface {
 	Start(ctx context.Context) error
 	Stop(ctx context.Context) error

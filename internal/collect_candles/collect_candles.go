@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gofrs/uuid"
+	"github.com/jinzhu/copier"
 	db "github.com/mrOwner/robot/db/postgres/sqlc"
 	cg "github.com/mrOwner/robot/pkg/candles_grabber"
 	"github.com/mrOwner/robot/util"
@@ -39,7 +41,7 @@ func (c *Collector) Start(ctx context.Context) (err error) {
 	}
 	defer util.JoinErrs(err, file.Close)
 
-	ch := make(chan []cg.Candle)
+	ch := make(chan cg.Candles)
 	eg, gtx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
@@ -69,7 +71,7 @@ func (c *Collector) Stop(_ context.Context) error {
 	return nil
 }
 
-func (c *Collector) read(ctx context.Context, file *os.File, ch chan []cg.Candle) error {
+func (c *Collector) read(ctx context.Context, file *os.File, ch chan cg.Candles) error {
 	defer close(ch)
 
 	bf := bufio.NewScanner(file)
@@ -99,20 +101,13 @@ func (c *Collector) read(ctx context.Context, file *os.File, ch chan []cg.Candle
 	return nil
 }
 
-func (c *Collector) save(ctx context.Context, ch chan []cg.Candle) error {
+func (c *Collector) save(ctx context.Context, ch chan cg.Candles) error {
 	for candles := range ch {
 		arg := make([]db.CreateCandlesParams, len(candles))
-		for i, candle := range candles {
-			arg[i] = db.CreateCandlesParams{
-				Uid:    candle.UID.String(),
-				Date:   candle.Date,
-				Open:   candle.Open,
-				Close:  candle.Close,
-				High:   candle.High,
-				Low:    candle.Low,
-				Volume: int64(candle.Volume),
-			}
+		if err := copier.CopyWithOption(&arg, candles, copierOpt()); err != nil {
+			return nil
 		}
+
 		_, err := c.querier.CreateCandles(ctx, arg)
 		if err != nil {
 			return err
@@ -120,4 +115,19 @@ func (c *Collector) save(ctx context.Context, ch chan []cg.Candle) error {
 	}
 
 	return nil
+}
+
+// For copier package
+func copierOpt() copier.Option {
+	return copier.Option{
+		Converters: []copier.TypeConverter{
+			{
+				SrcType: uuid.UUID{},
+				DstType: "",
+				Fn: func(src interface{}) (interface{}, error) {
+					return src.(uuid.UUID).String(), nil
+				},
+			},
+		},
+	}
 }
