@@ -1,0 +1,8 @@
+version: v1
+plugins:
+  - plugin: buf.build/bufbuild/connect-go
+    # Unlike grpc-go, connect stubs do not need to be generated to the
+    # same directory, however you are free to do so
+    out: clients/grpc/gen
+    # You almost always want to set this option with protoc-gen-connect-go
+    opt: paths=import
