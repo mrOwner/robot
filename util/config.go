@@ -12,12 +12,14 @@ const (
 // Config stores all configuration of the application.
 // The values are read by viper from a config file or environment variable.
 type Config struct {
-	Enviroment           string `mapstructure:"ENVIROMENT"`
+	Environment          string `mapstructure:"ENVIRONMENT"`
 	DBDriver             string `mapstructure:"DB_DRIVER"`
 	DBSource             string `mapstructure:"DB_SOURCE"`
 	Token                string `mapstructure:"TOKEN"`
 	SandboxToken         string `mapstructure:"SANDBOX_TOKEN"`
 	URLhistoricalCandles string `mapstructure:"URL_HISTORICAL_CANDLES"`
+	URLAPI               string `mapstructure:"URL_API"`
+	SandboxURLAPI        string `mapstructure:"SANDBOX_URL_API"`
 }
 
 // LoadConfig reads configuration from file or environment variables.

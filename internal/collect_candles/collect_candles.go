@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/jinzhu/copier"
+	"github.com/mrOwner/robot/clients"
 	db "github.com/mrOwner/robot/db/postgres/sqlc"
 	cg "github.com/mrOwner/robot/pkg/candles_grabber"
 	"github.com/mrOwner/robot/util"
@@ -20,14 +21,16 @@ type Collector struct {
 	path    string
 	grabber cg.Reader
 	querier db.Querier
+	client  clients.Client
 	cancel  context.CancelFunc
 }
 
-func New(path string, grabber cg.Reader, dbtx db.DBTX) *Collector {
+func New(path string, grabber cg.Reader, dbtx db.DBTX, client clients.Client) *Collector {
 	return &Collector{
 		path:    path,
 		grabber: grabber,
 		querier: db.New(dbtx),
+		client:  client,
 	}
 }
 
@@ -66,7 +69,9 @@ func (c *Collector) Start(ctx context.Context) (err error) {
 }
 
 func (c *Collector) Stop(_ context.Context) error {
-	c.cancel()
+	if c.cancel != nil {
+		c.cancel()
+	}
 
 	return nil
 }
@@ -105,7 +110,7 @@ func (c *Collector) save(ctx context.Context, ch chan cg.Candles) error {
 	for candles := range ch {
 		arg := make([]db.CreateCandlesParams, len(candles))
 		if err := copier.CopyWithOption(&arg, candles, copierOpt()); err != nil {
-			return nil
+			return err
 		}
 
 		_, err := c.querier.CreateCandles(ctx, arg)

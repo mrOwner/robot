@@ -1,8 +1,15 @@
 version: v1
 plugins:
+  # The protoc-gen-go stubs are required for grpc-go
+  - plugin: buf.build/protocolbuffers/go
+    out: clients/grpc
+    # You almost always want to set this option with protoc-gen-go
+    # opt: paths=import
+    opt: paths=source_relative
   - plugin: buf.build/bufbuild/connect-go
     # Unlike grpc-go, connect stubs do not need to be generated to the
     # same directory, however you are free to do so
-    out: clients/grpc/gen
+    out: clients/grpc
     # You almost always want to set this option with protoc-gen-connect-go
-    opt: paths=import
+    # opt: paths=import
+    opt: paths=source_relative

@@ -16,7 +16,7 @@ help: ## Display this help.
 ##@ Run
 
 candles-grab: ## Run stock candles grabber.
-	@go run ./cmd/robot/main.go
+	@go run ./cmd/robot/main.go grab
 .PHONY: candles-grab
 
 ##@ Database (if you need to change RDMS, check DB_USED variable in the makefile).
@@ -76,11 +76,6 @@ migration/set: ## Set a vesrion of migration.
 	atlas migrate set $$mig --env ${DB_USED}
 .PHONY: migration/set
 
-sqlc: ## Generate sqlc files.
-	@rm -rf ${SQLC_PATH};	\
-	sqlc generate
-.PHONY: migration/sqlc
-
 ##@ Mocks
 
 mocks: ## Generate mocks.
@@ -88,6 +83,18 @@ mocks: ## Generate mocks.
 	mockgen -package mock -destination ./mocks/querier.go github.com/mrOwner/robot/db/postgres/sqlc Querier
 
 .PHONY: mocks
+
+##@ Generates
+
+sqlc: ## Generate sqlc files.
+	@rm -rf ${SQLC_PATH};	\
+	sqlc generate
+.PHONY: sqlc
+
+buf: ## Generate code by proto files.
+	@rm -rf ./clients/grpc/proto/* ; \
+	buf generate
+.PHONY: buf
 
 ##@ Install
 

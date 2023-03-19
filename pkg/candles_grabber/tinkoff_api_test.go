@@ -39,7 +39,7 @@ func TestTinkoffApi(t *testing.T) {
 	httpmock.RegisterResponderWithQuery("GET", url, query, httpmock.NewBytesResponder(http.StatusOK, body))
 
 	ctx := context.Background()
-	reader := grb.NewTinkoffApiReader("", url)
+	reader := grb.NewTinkoffApiReader(url, "")
 	resp, err := reader.Read(ctx, figi, year)
 	require.NoError(t, err)
 	require.Equal(t, httpmock.GetTotalCallCount(), 1)

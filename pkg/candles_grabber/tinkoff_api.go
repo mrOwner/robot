@@ -26,14 +26,14 @@ var (
 
 // TinkoffApiReader is a reader of historical candles from the Tinkoff API.
 type TinkoffApiReader struct {
-	Token string // Access token.
+	token string // Access token.
 	URL   string // URL candles.
 }
 
 // NewTinkoffApiReader create a new tinkoff reader.
-func NewTinkoffApiReader(token, URL string) Reader {
+func NewTinkoffApiReader(URL, token string) Reader {
 	return &TinkoffApiReader{
-		Token: token,
+		token: token,
 		URL:   URL,
 	}
 }
@@ -50,8 +50,7 @@ func (r *TinkoffApiReader) read(ctx context.Context, figi string, year int) (res
 
 	}
 
-	bearer := "Bearer " + r.Token
-	req.Header.Set("Authorization", bearer)
+	req.Header.Set(util.BearerToken(r.token))
 
 	q := req.URL.Query()
 	q.Add("figi", figi)

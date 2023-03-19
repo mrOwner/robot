@@ -9,6 +9,7 @@ import (
 
 	"github.com/alecthomas/kingpin/v2"
 	"github.com/jackc/pgx/v4"
+	"github.com/mrOwner/robot/clients/grpc"
 	"github.com/mrOwner/robot/internal/app"
 	cc "github.com/mrOwner/robot/internal/collect_candles"
 	cg "github.com/mrOwner/robot/pkg/candles_grabber"
@@ -31,7 +32,7 @@ func main() {
 	zerolog.DurationFieldUnit = time.Second
 
 	app := app.New()
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	switch kingpin.Parse() {
@@ -41,9 +42,9 @@ func main() {
 			log.Fatal().Err(err).Msg("cannot load config")
 		}
 
-		token := config.SandboxToken
-		if config.Enviroment == util.Production {
-			token = config.Token
+		token, url := config.SandboxToken, config.SandboxURLAPI
+		if config.Environment == util.Production {
+			token, url = config.Token, config.URLAPI
 		}
 
 		conn, err := pgx.Connect(ctx, config.DBSource)
@@ -52,8 +53,9 @@ func main() {
 		}
 		defer conn.Close(context.Background())
 
-		grabber := cg.NewTinkoffApiReader(token, config.URLhistoricalCandles)
-		collector := cc.New(*file, grabber, conn)
+		grabber := cg.NewTinkoffApiReader(config.URLhistoricalCandles, token)
+		client := grpc.New(url, token)
+		collector := cc.New(*file, grabber, conn, client)
 
 		app.AddSynchronous("grabber", collector)
 	default:
