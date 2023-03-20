@@ -55,15 +55,15 @@ func (c *Collector) Start(ctx context.Context) (err error) {
 	})
 
 	done := make(chan error)
-	defer close(done)
 	go func() {
+		defer close(done)
 		done <- eg.Wait()
 	}()
 
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
-	case err := <-done:
+	case err = <-done:
 		return err
 	}
 }

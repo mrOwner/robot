@@ -84,8 +84,8 @@ func (a *App) Start(ctx context.Context) error {
 	}
 
 	done := make(chan error)
-	defer close(done)
 	go func() {
+		defer close(done)
 		done <- eg.Wait()
 	}()
 
