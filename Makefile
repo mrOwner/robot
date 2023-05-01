@@ -1,4 +1,4 @@
-# change this
+# change this.
 # 			↓ 	mysql or postgres
 DB_USED := postgres
 
