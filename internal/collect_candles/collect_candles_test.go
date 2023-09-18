@@ -37,25 +37,26 @@ func TestCopier(t *testing.T) {
 			_, okY1 := y.(cg.Candles)
 			_, okY2 := y.([]db.CreateCandlesParams)
 			return (okX1 || okX2) && (okY1 || okY2)
-		}, cmp.Transformer("", func(a interface{}) []db.CreateCandlesParams {
-			candles, ok := a.(cg.Candles)
-			if !ok {
-				return a.([]db.CreateCandlesParams)
-			}
-			arg := make([]db.CreateCandlesParams, len(candles))
-			for i, candle := range candles {
-				arg[i] = db.CreateCandlesParams{
-					UID:    candle.UID.String(),
-					Date:   candle.Date,
-					Open:   candle.Open,
-					Close:  candle.Close,
-					High:   candle.High,
-					Low:    candle.Low,
-					Volume: int64(candle.Volume),
+		},
+			cmp.Transformer("", func(a interface{}) []db.CreateCandlesParams {
+				candles, ok := a.(cg.Candles)
+				if !ok {
+					return a.([]db.CreateCandlesParams)
 				}
-			}
-			return arg
-		})),
+				arg := make([]db.CreateCandlesParams, len(candles))
+				for i, candle := range candles {
+					arg[i] = db.CreateCandlesParams{
+						UID:    candle.UID.String(),
+						Date:   candle.Date,
+						Open:   candle.Open,
+						Close:  candle.Close,
+						High:   candle.High,
+						Low:    candle.Low,
+						Volume: int64(candle.Volume),
+					}
+				}
+				return arg
+			})),
 	}
 	require.Empty(t, cmp.Diff(want, got, opts))
 }

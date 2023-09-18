@@ -1,3 +1,4 @@
+//go:generate go run github.com/ogen-go/ogen/cmd/ogen --target http/ogen -package ogen --clean ../schema/openapi.yaml
 package clients
 
 import (
